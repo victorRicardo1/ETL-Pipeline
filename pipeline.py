@@ -1,15 +1,24 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# ==================EXTRAÇÃO============================
+# IDE UTILIZADA: Spyder
+
+
+# ==================EXTRAÇÃO=================================
+# Aqui extraimos os dados de uma planilha que contém informações de jogos que foram bem sucedidos em seus gêneros nos últimos anos
+# As colunas dessa tabela são id, titulo, genero, preco, nota e vendas.
+# A partir disso, foi utilizado a biblioteca pandas para a extração desses dados para o uso da etapa de transform
+
+
 df = pd.read_csv("games.csv", sep=";")
 
 # ==================TRANSFORMAÇÃO============================
+# Aqui é passado uma serie de alterações para prover dados adicionais para a planilha, além de atualiza-la.
 
 # Calcular receita estimada
 df["receita_estimativa"] = df["preco"] * df["vendas"]
 
-# Criar categoria de vendas
+# Criar categoria de vendas para adicionar em cada game seu desempenho em vendas
 
 
 def categoria_vendas(v):
@@ -23,7 +32,7 @@ def categoria_vendas(v):
 
 df["categoria_vendas"] = df["vendas"].apply(categoria_vendas)
 
-# Criar categoria de nota
+# Criar categoria de nota para cada jogo
 
 
 def categoria_nota(n):
@@ -48,7 +57,9 @@ metricas_genero = df.groupby(
     "genero")[["nota", "vendas", "receita_estimativa"]].mean()
 
 # ==================LOAD============================
+# Utilizando o matplotlib, criamos alguns gráficos com o resultado tirado de toda a transformação da planilha extraida
 
+# Criando a planilha atualizada
 df.to_csv("games_transformado.csv", sep=";", index=False)
 
 # GRÁFICOS
