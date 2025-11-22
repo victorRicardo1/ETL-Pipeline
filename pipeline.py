@@ -1,43 +1,93 @@
-# Pipeline ETL
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# ================EXTRACT===============================
-# Extraindo os dados da planilha de gamesa
-
+# ==================EXTRAÇÃO============================
 df = pd.read_csv("games.csv", sep=";")
 
-# Dados brutos antes da transformação
-print(df.head)
+# ==================TRANSFORMAÇÃO============================
 
-# =============TRANSFORM================================
+# Calcular receita estimada
+df["receita_estimativa"] = df["preco"] * df["vendas"]
 
-# Eliminando a possibilidade de registros nulos e padronizando os títulos com iniciais maiúsculas
-df = df.dropna()
+# Criar categoria de vendas
 
-df["titulo"] = df["titulo"].str.title()
 
-df["preco"] = df["preco"].astype(float)
-df["vendas"] = df["vendas"].astype(float)
-df["nota"] = df["nota"].astype(float)
+def categoria_vendas(v):
+    if v < 1_000_000:
+        return "baixa"
+    elif v < 10_000_000:
+        return "media"
+    else:
+        return "alta"
 
-print(df.head)
-# Metricas e agregações
 
-df["receita_estim"] = df["preco"] * df["vendas"]
+df["categoria_vendas"] = df["vendas"].apply(categoria_vendas)
 
-# Filtragem em jogos  com receita estimada acima de 1 bilhão
+# Criar categoria de nota
 
-df_filtered = df[df["receita_estim"] > 1_000_000_000]
 
-print(df_filtered.head)
+def categoria_nota(n):
+    if n < 6:
+        return "ruim"
+    elif n < 8:
+        return "boa"
+    else:
+        return "excelente"
 
-# ====================LOAD=============================
 
-# Criação do arquivo novo com os jogos mais vendidos
-df_filtered.to_csv("games_most_sold.csv", sep=";", index=False)
-print("Arquivo gerado com suceddo!")
+df["categoria_nota"] = df["nota"].apply(categoria_nota)
 
-# ==Gráficos
+# Ordenar jogos por melhor nota
+df_sorted_nota = df.sort_values(by="nota", ascending=False)
+
+# Ordenar jogos por maior receita
+df_sorted_receita = df.sort_values(by="receita_estimativa", ascending=False)
+
+# Agrupar por gênero (métricas úteis)
+metricas_genero = df.groupby(
+    "genero")[["nota", "vendas", "receita_estimativa"]].mean()
+
+# ==================LOAD============================
+
+df.to_csv("games_transformado.csv", sep=";", index=False)
+
+# GRÁFICOS
+
+# Gráfico 1 - Top receitas
+top_receita = df_sorted_receita.head(10)
 
 plt.figure(figsize=(10, 6))
+plt.bar(top_receita["titulo"], top_receita["receita_estimativa"])
+plt.xticks(rotation=75)
+plt.title("Top 10 Jogos por Receita Estimada")
+plt.ylabel("Receita Estimada")
+plt.tight_layout()
+plt.savefig("grafico_receita.png")
+plt.close()
+
+# Gráfico 2 – Notas dos jogos
+plt.figure(figsize=(10, 6))
+plt.bar(df_sorted_nota["titulo"], df_sorted_nota["nota"])
+plt.xticks(rotation=75)
+plt.title("Notas dos Jogos")
+plt.ylabel("Nota")
+plt.tight_layout()
+plt.savefig("grafico_notas.png")
+plt.close()
+
+# Gráfico 3 – Média por gênero
+plt.figure(figsize=(10, 6))
+plt.bar(metricas_genero.index, metricas_genero["nota"])
+plt.title("Média de Notas por Gênero")
+plt.ylabel("Nota Média")
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.savefig("grafico_genero_nota.png")
+plt.close()
+
+print("ETL concluído com sucesso!")
+print("- games_transformado.csv gerado")
+print("- grafico_receita.png")
+print("- grafico_notas.png")
+print("- grafico_genero_nota.png")
+print("\nMétricas por gênero:\n", metricas_genero)
