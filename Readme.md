@@ -16,19 +16,14 @@ Por fim, devo realizar o **Carregamento do dados** transformados em um novo arqu
 Nesta etapa, vamos extrair os dados de resultados por área de conhecimento do arquivo CSV **games.csv**. Este arquivo traz informações referentes games. As colunas contidas no arquivo são as seguintes: **id**, **titulo**, **genero**, **preco**, **nota**, **vendas**.
 
 ### 📝 Transform
-Agora que já temos os dados carregados na fase de Extração, podemos calcular a média de cada área do conhecimento nos últimos 5 anos usando a função **mean( )** do pandas.
+Agora que já temos os dados carregados na fase de Extração, podemos calcular a receita estimada de cada jogo multiplicando o preço pela quantidade de vendas desses jogos, assim, criando uma nova coluna para o arquivo representando a receita estimada desse jogo. Após calcular a receita estimada, calculamos a categoria de vendas no qual classifica como foram as vendas do jogo, também criando uma coluna nova para guardar este dado sobre como a venda se saiu, essa categoria se separa entre baixa(menor que 1 milhão), media(menor que 10 milhões e maior que 1 milhão) e alta onde é maior que 10 milhões. Além disso, também foi criada outra coluna para calcularmos a categoria das notas, assim, analizando se um jogo foi bom, ruim ou excelente, tendo esses jogos ordenados de acordo com a nota.
 
 ### 📊 Load
-Nessa etapa vamos salvar os dados transformados em um novo arquivo CSV e criar um gráfico que possa ser visualizado em tela. Para isso, vou utilizar a biblioteca **Matplotlib** do pandas.
+Nessa etapa vamos salvar os dados transformados em um novo arquivo CSV e criar 3 gráficos que possa ser visualizado em tela, um para a média dos generos, nota dos jogos e top receitas. Para isso, vou utilizar a biblioteca **Matplotlib** do pandas.
 
 ## 🧰 Ferramentas utilizadas
 
 ![PYTHON](https://img.shields.io/badge/Python-3776AB.svg?style=for-the-badge&logo=Python&logoColor=white)
 ![GIT](https://img.shields.io/badge/Git-F05032.svg?style=for-the-badge&logo=Git&logoColor=white)
-![GOOGLE COLAB](https://img.shields.io/badge/Google%20Colab-F9AB00.svg?style=for-the-badge&logo=Google-Colab&logoColor=white)
-![VSCODE](https://img.shields.io/badge/Visual%20Studio%20Code-007ACC.svg?style=for-the-badge&logo=Visual-Studio-Code&logoColor=white)
+##### IDE utilizada: Spyder
 
-## 🔗 Confira meu projeto no Google Colab
-<a target="_blank" href="https://colab.research.google.com/drive/1qwz1d6T6c64Mc0VCYbBY1do9-dL9UPrG#scrollTo=kNuP0SDUZMBY">
-  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
-</a>
